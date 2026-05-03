@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miko Store | Premium Roblox Map Services</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Plus+Jakarta+Sans:wght@300;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #00f2ff; 
+            --secondary: #7000ff; 
+            --accent: #ff00c8; 
+            --bg-dark: #050505;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-dim: #b0b0b0;
+            --primary-glow: rgba(0, 242, 255, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--bg-dark); 
+            color: var(--text-main); 
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            padding-bottom: 90px;
+        }
+
+        /* --- BACKGROUND --- */
+        .video-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2; pointer-events: none; overflow: hidden;
+        }
+        .video-container iframe {
+            position: absolute; top: 50%; left: 50%;
+            width: 100vw; height: 56.25vw;
+            min-height: 100vh; min-width: 177.77vh;
+            transform: translate(-50%, -50%) scale(1.1);
+            filter: brightness(0.3) contrast(1.1);
+        }
+        .vignette {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.9) 100%);
+            z-index: -1;
+        }
+
+        /* --- NAV TOP --- */
+        nav {
+            position: fixed; top: 0; width: 100%; padding: 20px 6%;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000; background: rgba(0,0,0,0.6); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .logo-text { 
+            font-family: 'Orbitron'; font-weight: 900; font-size: 1.6rem; 
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: 3px;
+        }
+
+        /* --- BOTTOM MENU BAR --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; height: 75px;
+            background: rgba(10, 10, 10, 0.9); backdrop-filter: blur(25px);
+            border-top: 2px solid var(--primary);
+            display: flex; justify-content: space-around; align-items: center;
+            z-index: 2000; padding: 0 5px;
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center;
+            color: var(--text-dim); text-decoration: none; font-size: 0.6rem;
+            font-family: 'Orbitron'; gap: 4px; transition: 0.3s; flex: 1;
+        }
+        .nav-item i { font-size: 1.1rem; }
+        .nav-item.active { color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); transform: translateY(-5px); }
+
+        /* --- SECTIONS --- */
+        section { 
+            min-height: 100vh; padding: 110px 6% 40px 6%; 
+            display: none; flex-direction: column; 
+            align-items: center; justify-content: center; 
+            text-align: center;
+        }
+        section.active { display: flex; animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+        .section-title {
+            font-family: 'Orbitron'; font-size: 2rem; font-weight: 900;
+            background: linear-gradient(135deg, #fff, var(--primary));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 30px; letter-spacing: 2px;
+        }
+
+        /* --- CARDS --- */
+        .glass-card {
+            background: var(--glass); border: 1px solid var(--glass-border);
+            border-radius: 25px; padding: 30px 20px; backdrop-filter: blur(20px);
+            width: 100%; max-width: 900px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .hero-img { width: 100%; border-radius: 15px; border: 1px solid var(--glass-border); margin: 20px 0; }
+        .hologram-logo { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--primary); margin-bottom: 15px; box-shadow: 0 0 20px var(--primary-glow); animation: float 4s ease-in-out infinite; object-fit: cover; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; width: 100%; }
+        
+        /* --- TEAM CARDS --- */
+        .team-card {
+            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+            padding: 20px; border-radius: 20px; text-align: center; transition: 0.3s;
+        }
+        .team-card:hover { border-color: var(--primary); transform: translateY(-5px); background: rgba(0, 242, 255, 0.05); }
+        .team-img { width: 90px; height: 90px; border-radius: 20px; margin-bottom: 12px; border: 2px solid var(--primary); object-fit: cover; }
+        .role-badge { font-family: 'Orbitron'; font-size: 0.65rem; padding: 4px 10px; border-radius: 5px; background: rgba(0,0,0,0.5); display: inline-block; margin-top: 8px; border: 1px solid rgba(255,255,255,0.1); }
+
+        /* --- PRICING --- */
+        .price-card { background: var(--glass); border: 1px solid var(--glass-border); padding: 20px; border-radius: 15px; transition: 0.3s; }
+        .price-card:hover { border-color: var(--primary); background: rgba(255,255,255,0.08); }
+        .price-card h3 { font-family: 'Orbitron'; color: var(--primary); margin-bottom: 5px; }
+
+        .extra-cp-box { margin-top: 25px; padding: 15px; border-top: 1px dashed var(--glass-border); width: 100%; }
+        .extra-cp-box h4 { font-family: 'Orbitron'; font-size: 0.8rem; color: var(--accent); margin-bottom: 10px; }
+
+        /* --- FORM & PAYMENT LOGOS --- */
+        input, select { width: 100%; padding: 15px; background: rgba(0,0,0,0.6); border: 1px solid var(--glass-border); border-radius: 12px; color: white; outline: none; margin-bottom: 15px; font-family: 'Plus Jakarta Sans'; }
+        .btn-submit { width: 100%; padding: 18px; border-radius: 15px; border: none; background: linear-gradient(90deg, var(--primary), var(--secondary)); color: white; font-family: 'Orbitron'; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px var(--primary-glow); }
+
+        .payment-footer { margin-top: 25px; text-align: center; border-top: 1px solid var(--glass-border); padding-top: 20px; }
+        .payment-grid { display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .pay-logo { height: 25px; filter: grayscale(0.2) brightness(1.2); }
+
+        /* CSS BARU UNTUK VIDEO */
+        .yt-container { width: 100%; margin-top: 30px; border-radius: 15px; overflow: hidden; border: 1px solid var(--glass-border); position: relative; padding-bottom: 56.25%; height: 0; }
+        .yt-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .music-instruction { margin-top: 10px; padding: 10px; background: rgba(0, 242, 255, 0.1); border-radius: 10px; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/g0kFdsn2RUs?autoplay=1&mute=1&loop=1&playlist=g0kFdsn2RUs&controls=0&modestbranding=1" frameborder="0"></iframe>
+    </div>
+    <div class="vignette"></div>
+
+    <nav><div class="logo-text">MIKO STORE</div></nav>
+
+    <div class="bottom-nav">
+        <a href="#home" class="nav-item active" onclick="navigate('home', this)"><i class="fa-solid fa-house"></i><span>HOME</span></a>
+        <a href="#features" class="nav-item" onclick="navigate('features', this)"><i class="fa-solid fa-shield-heart"></i><span>PLUS</span></a>
+        <a href="#pricing" class="nav-item" onclick="navigate('pricing', this)"><i class="fa-solid fa-tags"></i><span>HARGA</span></a>
+        <a href="#club" class="nav-item" onclick="navigate('club', this)"><i class="fa-solid fa-music"></i><span>CLUB</span></a>
+        <a href="#team" class="nav-item" onclick="navigate('team', this)"><i class="fa-solid fa-users-gear"></i><span>TEAM</span></a>
+        <a href="#order" class="nav-item" onclick="navigate('order', this)"><i class="fa-solid fa-cart-shopping"></i><span>PESAN</span></a>
+        <a href="#social" class="nav-item" onclick="navigate('social', this)"><i class="fa-brands fa-discord"></i><span>COMM</span></a>
+    </div>
+
+    <!-- HOME -->
+    <section id="home" class="active">
+        <div class="glass-card">
+            <img src="https://raw.githubusercontent.com/rcexecution447-blip/Miko-store-/refs/heads/main/standard_3-4.gif" class="hologram-logo">
+            <h1 style="font-family: 'Orbitron';">WELCOME TO MIKO STORE</h1>
+            <img src="https://raw.githubusercontent.com/rcexecution447-blip/Miko-store/refs/heads/main/9d6ab396-4c7a-4a11-a94a-c4db948c16a8.jpeg" class="hero-img">
+            <p style="color: var(--text-dim);">Jasa pembuatan Map Roblox terbaik dengan sistem profesional & hasil maksimal.</p>
+            
+            <!-- VIDEO & PETUNJUK BARU -->
+            <div class="yt-container">
+                <iframe src="https://www.youtube.com/embed/QiZBBCpzEbo" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <div class="music-instruction">
+                <p><i class="fa-solid fa-circle-info"></i> <b>Petunjuk Musik:</b> Klik tombol play di atas untuk mendengarkan lagu sambil berbelanja.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- KELEBIHAN -->
+    <section id="features">
+        <h2 class="section-title">KELEBIHAN KAMI</h2>
+        <div class="grid-container">
+            <div class="price-card"><i class="fa-solid fa-bolt" style="color:var(--primary)"></i><h4>Fast Response</h4></div>
+            <div class="price-card"><i class="fa-solid fa-gem" style="color:var(--primary)"></i><h4>High Detail</h4></div>
+            <div class="price-card"><i class="fa-solid fa-lock" style="color:var(--primary)"></i><h4>Trusted 100%</h4></div>
+            <div class="price-card"><i class="fa-solid fa-code" style="color:var(--primary)"></i><h4>No Lag Script</h4></div>
+            <div class="price-card"><i class="fa-solid fa-eye" style="color:var(--primary)"></i><h4>Bagus & Rapi</h4></div>
+            <div class="price-card"><i class="fa-solid fa-screwdriver-wrench" style="color:var(--primary)"></i><h4>Free Repair</h4></div>
+        </div>
+    </section>
+
+    <!-- HARGA -->
+    <section id="pricing">
+        <h2 class="section-title">DAFTAR HARGA CP</h2>
+        <div class="grid-container">
+            <div class="price-card"><h3>10 CP</h3><p>Rp 450.000</p></div>
+            <div class="price-card"><h3>15 CP</h3><p>Rp 620.000</p></div>
+            <div class="price-card" style="border-color:var(--primary)"><h3>20 CP</h3><p>Rp 850.000</p></div>
+            <div class="price-card"><h3>30 CP</h3><p>Rp 1.300.000</p></div>
+        </div>
+        
+        <div class="extra-cp-box">
+            <h4>TAMBAHAN CP (OPSIONAL)</h4>
+            <div class="grid-container">
+                <div class="price-card" style="padding: 10px;"><h5>5 CP</h5></div>
+                <div class="price-card" style="padding: 10px;"><h5>6 CP</h5></div>
+                <div class="price-card" style="padding: 10px;"><h5>8 CP</h5></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CLUB -->
+    <section id="club">
+        <h2 class="section-title">MAP CLUB</h2>
+        <div class="glass-card">
+            <i class="fa-solid fa-compact-disc" style="font-size: 3rem; color: var(--accent);"></i>
+            <h3 style="margin: 15px 0;">CUSTOM CLUB MAP</h3>
+            <p>Pengerjaan Map Club (Nightclub/Bar/Lounge) dengan lighting system otomatis.</p>
+            <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                <p style="color: var(--primary);">Harga: Menyesuaikan Tingkat Kesulitan</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- TEAM -->
+    <section id="team">
+        <h2 class="section-title">TEAM MIKO STORE</h2>
+        <div class="grid-container">
+            <div class="team-card">
+                <img src="https://raw.githubusercontent.com/rcexecution447-blip/Miko-store/refs/heads/main/Screenshot_20260503-060419.jpg" class="team-img">
+                <div style="font-weight: 800; font-size: 0.9rem;">OWNER MIKO</div>
+                <span class="role-badge" style="color: gold; border-color: gold;">FOUNDER</span>
+            </div>
+            <div class="team-card">
+                <img src="https://raw.githubusercontent.com/rcexecution447-blip/Miko-store/refs/heads/main/Screenshot_20260503-060434.jpg" class="team-img">
+                <div style="font-weight: 800; font-size: 0.9rem;">AKBAR</div>
+                <span class="role-badge" style="color: var(--accent); border-color: var(--accent);">MODERATOR</span>
+            </div>
+            <div class="team-card">
+                <img src="https://raw.githubusercontent.com/rcexecution447-blip/Miko-store/refs/heads/main/0eafc40ed479fa5fbc295636dcf3f8b43131f93a2c80d921b4f3c27f1f87ede3.gif" class="team-img">
+                <div style="font-weight: 800; font-size: 0.9rem;">ELERNATE</div>
+                <span class="role-badge" style="color: var(--primary); border-color: var(--primary);">DEVELOPER</span>
+            </div>
+            <div class="team-card">
+                <img src="https://raw.githubusercontent.com/rcexecution447-blip/Miko-store/refs/heads/main/Screenshot_20260503-060459.jpg" class="team-img">
+                <div style="font-weight: 800; font-size: 0.9rem;">AISS</div>
+                <span class="role-badge" style="color: #00ff88; border-color: #00ff88;">MEMBER</span>
+            </div>
+            <div class="team-card">
+                <img src="https://raw.githubusercontent.com/rcexecution447-blip/Miko-store/refs/heads/main/images%20(1).jpeg" class="team-img">
+                <div style="font-weight: 800; font-size: 0.9rem;">RIGAMI</div>
+                <span class="role-badge" style="color: #00ff88; border-color: #00ff88;">MEMBER</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- PESAN -->
+    <section id="order">
+        <h2 class="section-title">PEMESANAN</h2>
+        <div class="glass-card">
+            <form id="webhookForm">
+                <input type="text" id="discord_id" placeholder="USERNAME DISCORD" required>
+                <select id="packet_choice">
+                    <option value="5 CP (Extra)">5 Checkpoints (Extra)</option>
+                    <option value="6 CP (Extra)">6 Checkpoints (Extra)</option>
+                    <option value="8 CP (Extra)">8 Checkpoints (Extra)</option>
+                    <option value="10 CP">10 Checkpoints</option>
+                    <option value="15 CP">15 Checkpoints</option>
+                    <option value="20 CP">20 Checkpoints</option>
+                    <option value="30 CP">30 Checkpoints</option>
+                    <option value="Map Club Custom">Map Club (Custom)</option>
+                </select>
+                <select id="payment_method">
+                    <option value="DANA">DANA</option>
+                    <option value="GOPAY">GOPAY</option>
+                    <option value="OVO">OVO</option>
+                    <option value="QRIS">QRIS</option>
+                    <option value="TRANSFER BANK">TRANSFER BANK LAINNYA</option>
+                </select>
+                <button type="submit" class="btn-submit">KIRIM PESANAN KE DISCORD</button>
+            </form>
+            <p id="statusMsg" style="margin-top: 10px; font-weight: 800;"></p>
+
+            <div class="payment-footer">
+                <p style="font-size: 0.7rem; font-family: 'Orbitron'; margin-bottom: 12px; color: var(--primary);">METODE PEMBAYARAN TERSEDIA</p>
+                <div class="payment-grid">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg" class="pay-logo" alt="Dana">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg" class="pay-logo" alt="Gopay">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo_ovo_purple.svg" class="pay-logo" alt="OVO">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_QRIS.svg" class="pay-logo" alt="QRIS">
+                    <i class="fa-solid fa-building-columns" style="font-size: 1.2rem;"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOCIAL -->
+    <section id="social">
+        <h2 class="section-title">COMMUNITY</h2>
+        <a href="https://discord.gg/5Q6PQzwerT" target="_blank" class="glass-card" style="text-decoration: none; display: block; background: #5865F2;">
+            <i class="fa-brands fa-discord" style="font-size: 4rem; margin-bottom: 15px;"></i>
+            <h3>JOIN OUR DISCORD</h3>
+            <p>Klik untuk bergabung dengan Miko Store Community.</p>
+        </a>
+    </section>
+
+    <script>
+        function navigate(id, element) {
+            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            element.classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        document.getElementById('webhookForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const webhookUrl = "https://canary.discord.com/api/webhooks/1490783783224606922/lmwiNxoglQf8LT-avmL5qGZCLEt0G0a_12aBALRqhqLx15aV5rVpcexlZqP3rN7w9zYC";
+            const user = document.getElementById('discord_id').value;
+            const pkt = document.getElementById('packet_choice').value;
+            const pay = document.getElementById('payment_method').value;
+            const st = document.getElementById('statusMsg');
+
+            const payload = {
+                content: "🚀 **PESANAN BARU TERDETEKSI!**",
+                embeds: [{
+                    title: "Miko Store Order System",
+                    color: 0x00f2ff,
+                    fields: [
+                        { name: "👤 User Discord", value: `\`${user}\``, inline: true },
+                        { name: "📦 Paket CP", value: pkt, inline: true },
+                        { name: "💳 Pembayaran", value: pay, inline: false }
+                    ],
+                    timestamp: new Date()
+                }]
+            };
+
+            st.innerText = "Mengirim...";
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                st.innerText = "✅ Berhasil! Silakan cek Discord.";
+                st.style.color = "#00ff88";
+                document.getElementById('webhookForm').reset();
+            }).catch(() => {
+                st.innerText = "❌ Gagal Mengirim.";
+                st.style.color = "red";
+            });
+        });
+    </script>
+</body>
+</html>
